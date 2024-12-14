@@ -39,8 +39,10 @@ plt.show()
 df.loc[:,'area':'length of kernel groove'].hist(bins=10, figsize=(25, 20))
 plt.show()
 ```
-![boxplot display of outliers](outliers_boxplot.png)
-
+<div style="display: flex; justify-content: space-between;">
+  <img src="outliers_boxplot.png" width="45%" />
+  <img src="outliers_hist" width="45%" />
+</div>
 
 
 
