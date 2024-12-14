@@ -131,8 +131,8 @@ SVM_best_params = search.best_params_
 SVM_best_model = search.best_estimator_
 ```
 
-The printed results were as follows (and are stored for the test in future): 
-Best CV score = 0.958
+The printed results were as follows (and are stored for the test in future):  
+Best CV score = 0.958  
 Best parameters:  {'svm__C': 10, 'svm__gamma': 1, 'svm__kernel': 'linear'}
 
 Random Forest
@@ -162,8 +162,8 @@ RF_best_params = search.best_params_
 RF_best_model = search.best_estimator_
 ```
 
-The printed results were as follows (and are stored for the test in future): 
-Best CV score = 0.940
+The printed results were as follows (and are stored for the test in future):  
+Best CV score = 0.940  
 Best parameters:  {'rf__max_depth': 8, 'rf__n_estimators': 30}
 
 Knn
@@ -188,7 +188,8 @@ kNN_best_params = search.best_params_
 kNN_best_model = search.best_estimator_
 ```
 
-Best CV score = 0.958
+The printed results were as follows (and are stored for the test in future):  
+Best CV score = 0.958  
 Best parameters:  {'knn__n_neighbors': 3, 'knn__p': 2, 'knn__weights': 'distance'}
 
 Now the models will be compared on the test set.
