@@ -1,4 +1,4 @@
-# Machine Learning Techniques to Predict Wheat Type from Kernel
+# Machine Learning Techniques to Predict Wheat Type from Kernel Information
 The 'seeds' dataset provided is a csv file that contains information on different wheat kernels and the type of wheat they came from. The three types were: Kama, Rosa and Canadian. The independent variables used were area, perimeter, compactness, length of kernel, width of kernel, asymmetry coefficient and length of kernel groove. The dataset came from: https://archive.ics.uci.edu/dataset/236/seeds.
 
 The aim of this project is to use three different machine learning methods; support vector machine, random forest and Knn to predict the wheat a kernel belongs to. The data will be prepared, preprocessed, trained and tested. Finally, a conclusion will be given.
@@ -113,7 +113,11 @@ Support Vector Machine (SVM)
 
 ```
 # create the pipeline
+# create the pipeline
 pipe = Pipeline(steps=[('preprocess', preprocess_pipeline), ('svm', svm.SVC(probability=True))])
+
+set_config(display="diagram")
+pipe
 
 # prepare a hyperparameter grid
 param_grid = {
@@ -124,8 +128,8 @@ param_grid = {
 search = GridSearchCV(pipe, param_grid, n_jobs=-1, cv=5, refit=True)
 search.fit(X_train, y_train) #training happens here! SVM is trained 48x5 = 240 times
 
-print("Best CV score = %0.3f:" % search.best_score_)
-print("Best parameters: ", search.best_params_)
+print("Best CV score = %0.3f" % search.best_score_)
+print("Best hyperparameters: ", search.best_params_)
 
 # store the best params and best model for later use
 SVM_best_params = search.best_params_
@@ -147,7 +151,7 @@ pipe
 
 # prepare a hyperparameter grid
 # note that __ can be used to specify the name of a hyperparameter for a specific element in a pipeline
-# note also that this is not an exhaustive list of the hyperparameter of RandomForestClassifier and their possible values
+# note also that this is not an exhaustive list of the hyperparameters of RandomForestClassifier and their possible values
 param_grid = {
     'rf__n_estimators' : [10,20,30],
     'rf__max_depth': [2, 4, 6, 8]
@@ -155,8 +159,8 @@ param_grid = {
 
 search = GridSearchCV(pipe, param_grid, n_jobs=-1, cv=5, refit=True)
 search.fit(X_train, y_train)
-print("Best CV score = %0.3f:" % search.best_score_)
-print("Best parameters: ", search.best_params_)
+print("Best CV score = %0.3f" % search.best_score_)
+print("Best hyperparameters: ", search.best_params_)
 
 # store the best params and best model for later use
 RF_best_params = search.best_params_
@@ -173,6 +177,10 @@ Knn
 # create the pipeline
 pipe = Pipeline(steps=[('preprocess', preprocess_pipeline), ('knn', KNeighborsClassifier())])
 
+#visualise pipeline
+set_config(display="diagram")
+pipe
+
 param_grid = {
     'knn__n_neighbors': [3, 5, 7],
     'knn__weights': ['uniform', 'distance'],
@@ -181,8 +189,8 @@ param_grid = {
 
 search = GridSearchCV(pipe, param_grid, n_jobs=-1, cv=5, refit=True)
 search.fit(X_train, y_train)
-print("Best CV score = %0.3f:" % search.best_score_)
-print("Best parameters: ", search.best_params_)
+print("Best CV score = %0.3f" % search.best_score_)
+print("Best hyperparameters: ", search.best_params_)
 
 # store the best params and best model for later use
 kNN_best_params = search.best_params_
