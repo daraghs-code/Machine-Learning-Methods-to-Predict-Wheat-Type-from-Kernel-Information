@@ -1,4 +1,5 @@
 # Machine Learning Techniques to Predict Wheat Type from Kernel
+##XXXxxxxxxxx
 The 'seeds' dataset provided is a csv file that contains information on different wheat kernels and the type of wheat they came from. The three types were: Kama, Rosa and Canadian. The independent variables used were area, perimeter, compactness, length of kernel, width of kernel, asymmetry coefficient and length of kernel groove. The dataset came from: https://archive.ics.uci.edu/dataset/236/seeds.
 
 The aim of this project is to use three different machine learning methods; support vector machine, random forest and Knn to predict the wheat a kernel belongs to. The data will be prepared, preprocessed, trained and tested. Finally, a conclusion will be given.
@@ -102,8 +103,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle
 ```
 
 Modelling will begin, three models will be compared; SVM, random forest and Knn.
-For each model, the pipeline will be built, then a parameter grid will be created so the best
-set of parameters can be searched. Finally the best parameters will be saved for use on the test data.
+For each model, the pipeline will be built, then a hyperparameter grid will be created so the best
+set of hyperparameters can be searched. Finally the best hyperparameter will be saved for use on the test data.
 Note to avoid confusion - there are two types of test data. The first is implemented when cross validation
 is used on the training set. The second is a randomly selected set of 20% that will be used at the end
 to compare models.
@@ -114,7 +115,7 @@ Support Vector Machine (SVM)
 # create the pipeline
 pipe = Pipeline(steps=[('preprocess', preprocess_pipeline), ('svm', svm.SVC(probability=True))])
 
-# prepare a parameter grid
+# prepare a hyperparameter grid
 param_grid = {
     'svm__C': [0.1, 1, 10, 100],  
     'svm__gamma': [1, 0.1, 0.01, 0.001], 
@@ -133,7 +134,7 @@ SVM_best_model = search.best_estimator_
 
 The printed results were as follows (and are stored for the test in future):  
 Best CV score = 0.958  
-Best parameters:  {'svm__C': 10, 'svm__gamma': 1, 'svm__kernel': 'linear'}
+Best hyperparameters:  {'svm__C': 10, 'svm__gamma': 1, 'svm__kernel': 'linear'}
 
 Random Forest
 
@@ -144,9 +145,9 @@ pipe = Pipeline(steps=[('preprocess', preprocess_pipeline), ('rf', RandomForestC
 set_config(display="diagram")
 pipe
 
-# prepare a parameter grid
-# note that __ can be used to specify the name of a parameter for a specific element in a pipeline
-# note also that this is not an exhaustive list of the parameters of RandomForestClassifier and their possible values
+# prepare a hyperparameter grid
+# note that __ can be used to specify the name of a hyperparameter for a specific element in a pipeline
+# note also that this is not an exhaustive list of the hyperparameter of RandomForestClassifier and their possible values
 param_grid = {
     'rf__n_estimators' : [10,20,30],
     'rf__max_depth': [2, 4, 6, 8]
@@ -164,7 +165,7 @@ RF_best_model = search.best_estimator_
 
 The printed results were as follows (and are stored for the test in future):  
 Best CV score = 0.940  
-Best parameters:  {'rf__max_depth': 8, 'rf__n_estimators': 30}
+Best hyperparameters:  {'rf__max_depth': 8, 'rf__n_estimators': 30}
 
 Knn
 
@@ -190,7 +191,7 @@ kNN_best_model = search.best_estimator_
 
 The printed results were as follows (and are stored for the test in future):  
 Best CV score = 0.958  
-Best parameters:  {'knn__n_neighbors': 3, 'knn__p': 2, 'knn__weights': 'distance'}
+Best hyperparameter:  {'knn__n_neighbors': 3, 'knn__p': 2, 'knn__weights': 'distance'}
 
 Now the models will be compared on the test set.
 Evaluation metrics will be accuracy, precision, recall, f1 score
