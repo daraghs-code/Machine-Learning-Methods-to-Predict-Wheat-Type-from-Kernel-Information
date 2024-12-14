@@ -35,14 +35,15 @@ Check for outliers:
 ```
 df.loc[:,'area':'length of kernel groove'].boxplot(figsize=(20,5))
 plt.show()
+```
 
+![boxplot display of outliers][outliers_boxplot.png]
+```
 df.loc[:,'area':'length of kernel groove'].hist(bins=10, figsize=(25, 20))
 plt.show()
 ```
-<div style="display: flex; justify-content: space-between;">
-  <img src="outliers_boxplot.png" width="45%" />
-  <img src="outliers_hist.png" width="45%" />
-</div>
+![histogram display of outliers][outliers_his.png]
+
 
 
 
