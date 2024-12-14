@@ -108,18 +108,20 @@ Note to avoid confusion - there are two types of test data. The first is impleme
 is used on the training set. The second is a randomly selected set of 20% that will be used at the end
 to compare models.
 
-Support Vector Machine
+Support Vector Machine (SVM)
 
 ```
+# create the pipeline
 pipe = Pipeline(steps=[('preprocess', preprocess_pipeline), ('svm', svm.SVC(probability=True))])
 
+# prepare a parameter grid
 param_grid = {
     'svm__C': [0.1, 1, 10, 100],  
     'svm__gamma': [1, 0.1, 0.01, 0.001], 
     'svm__kernel': ['rbf', 'linear', 'poly']}
 
 search = GridSearchCV(pipe, param_grid, n_jobs=-1, cv=5, refit=True)
-search.fit(X_train, y_train)
+search.fit(X_train, y_train) #training happens here! SVM is trained 48x5 = 240 times
 
 print("Best CV score = %0.3f:" % search.best_score_)
 print("Best parameters: ", search.best_params_)
@@ -128,4 +130,134 @@ print("Best parameters: ", search.best_params_)
 SVM_best_params = search.best_params_
 SVM_best_model = search.best_estimator_
 ```
+
+The printed results were as follows (and are stored for the test in future): 
+Best CV score = 0.958
+Best parameters:  {'svm__C': 10, 'svm__gamma': 1, 'svm__kernel': 'linear'}
+
+Random Forest
+
+```
+# create the pipeline
+pipe = Pipeline(steps=[('preprocess', preprocess_pipeline), ('rf', RandomForestClassifier())])
+
+set_config(display="diagram")
+pipe
+
+# prepare a parameter grid
+# note that __ can be used to specify the name of a parameter for a specific element in a pipeline
+# note also that this is not an exhaustive list of the parameters of RandomForestClassifier and their possible values
+param_grid = {
+    'rf__n_estimators' : [10,20,30],
+    'rf__max_depth': [2, 4, 6, 8]
+}
+
+search = GridSearchCV(pipe, param_grid, n_jobs=-1, cv=5, refit=True)
+search.fit(X_train, y_train)
+print("Best CV score = %0.3f:" % search.best_score_)
+print("Best parameters: ", search.best_params_)
+
 # store the best params and best model for later use
+RF_best_params = search.best_params_
+RF_best_model = search.best_estimator_
+```
+
+The printed results were as follows (and are stored for the test in future): 
+Best CV score = 0.940
+Best parameters:  {'rf__max_depth': 8, 'rf__n_estimators': 30}
+
+Knn
+
+```
+# create the pipeline
+pipe = Pipeline(steps=[('preprocess', preprocess_pipeline), ('knn', KNeighborsClassifier())])
+
+param_grid = {
+    'knn__n_neighbors': [3, 5, 7],
+    'knn__weights': ['uniform', 'distance'],
+    'knn__p': [1, 2]
+}
+
+search = GridSearchCV(pipe, param_grid, n_jobs=-1, cv=5, refit=True)
+search.fit(X_train, y_train)
+print("Best CV score = %0.3f:" % search.best_score_)
+print("Best parameters: ", search.best_params_)
+
+# store the best params and best model for later use
+kNN_best_params = search.best_params_
+kNN_best_model = search.best_estimator_
+```
+
+Best CV score = 0.958
+Best parameters:  {'knn__n_neighbors': 3, 'knn__p': 2, 'knn__weights': 'distance'}
+
+Now the models will be compared on the test set.
+Evaluation metrics will be accuracy, precision, recall, f1 score
+and auc score. ROC curves will also be shown as a visual aid.
+
+```
+mean_fpr = np.linspace(start=0, stop=1, num=100)
+
+# model - a trained binary probabilistic classification model;
+#         it is assumed that there are two classes: 0 and 1
+#         and the classifier learns to predict probabilities for the examples to belong to class 1
+
+def evaluate_model(X_test, y_test, model):
+    
+    # compute probabilistic predictiond for the evaluation set
+    _probabilities = model.predict_proba(X_test)[:, 1]
+    
+    # compute exact predictiond for the evaluation set
+    _predicted_values = model.predict(X_test)
+        
+    # compute accuracy
+    _accuracy = accuracy_score(y_test, _predicted_values)
+        
+    # compute precision, recall and f1 score for class 1
+    _precision, _recall, _f1_score, _ = precision_recall_fscore_support(y_test, _predicted_values, labels=[1])
+    
+    # compute fpr and tpr values for various thresholds 
+    # by comparing the true target values to the predicted probabilities for class 1
+    _fpr, _tpr, _ = roc_curve(y_test, _probabilities)
+        
+    # compute true positive rates for the values in the array mean_fpr
+    _tpr_transformed = np.array([np.interp(mean_fpr, _fpr, _tpr)])
+    
+    # compute the area under the curve
+    _auc = auc(_fpr, _tpr)
+            
+    return _accuracy, _precision[0], _recall[0], _f1_score[0], _tpr_transformed, _auc
+
+SVM_accuracy, SVM_precision, SVM_recall, SVM_f1_score, SVM_tpr, SVM_auc = evaluate_model(X_test, y_test, SVM_best_model)
+RF_accuracy, RF_precision, RF_recall, RF_f1_score, RF_tpr, RF_auc = evaluate_model(X_test, y_test, RF_best_model)
+kNN_accuracy, kNN_precision, kNN_recall, kNN_f1_score, kNN_tpr, kNN_auc = evaluate_model(X_test, y_test, kNN_best_model)
+
+# plot display results comparison of accuracy, precision, recall, and f1 score
+SVM_metrics = np.array([SVM_accuracy, SVM_precision, SVM_recall, SVM_f1_score])
+RF_metrics = np.array([RF_accuracy, RF_precision, RF_recall, RF_f1_score])
+kNN_metrics = np.array([kNN_accuracy, kNN_precision, kNN_recall, kNN_f1_score])
+index = ['accuracy', 'precision', 'recall', 'F1-score']
+df_metrics = pd.DataFrame({'SVM': SVM_metrics, 'Random Forest': RF_metrics,  'kNN': kNN_metrics}, index=index)
+df_metrics.plot.bar(rot=0)
+plt.legend(loc="lower right")
+plt.savefig("results.bar.png")
+plt.show()
+```
+
+![barchart display of results](results.bar.png)
+
+```
+# plot display results comparison of roc curves with auc values
+plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Chance', alpha=0.8)
+plt.plot(mean_fpr, SVM_tpr[0,:], lw=2, color='blue', label='SVM (AUC = %0.4f)' % (SVM_auc), alpha=0.8)
+plt.plot(mean_fpr, RF_tpr[0,:], lw=2, color='orange', label='Random Forest (AUC = %0.4f)' % (RF_auc), alpha=0.8)
+plt.plot(mean_fpr, kNN_tpr[0,:], lw=2, color='orange', label='kNN (AUC = %0.4f)' % (kNN_auc), alpha=0.8)
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC curves for multiple classifiers')
+plt.legend(loc="lower right")
+plt.savefig("results.roc.png")
+plt.show()
+```
+
+![display of roc curve and auc values](results.roc.png)
