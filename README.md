@@ -22,13 +22,22 @@ import pickle
 import matplotlib.pyplot as plt
 ```
 
-Importing data and checking for na values.
+Import data and check for na values.
 
 ```
 df = pd.read_csv("seeds.csv")
 df.head()
 
 df.isna().sum()
+```
+Check for outliers:
+
+```
+df.loc[:,'area':'length of kernel groove'].boxplot(figsize=(20,5))
+plt.show()
+
+df.loc[:,'area':'length of kernel groove'].hist(bins=10, figsize=(25, 20))
+plt.show()
 ```
 
 
