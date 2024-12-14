@@ -41,7 +41,7 @@ plt.show()
 ```
 <div style="display: flex; justify-content: space-between;">
   <img src="outliers_boxplot.png" width="45%" />
-  <img src="outliers_hist" width="45%" />
+  <img src="outliers_hist.png" width="45%" />
 </div>
 
 
