@@ -1,5 +1,4 @@
 # Machine Learning Techniques to Predict Wheat Type from Kernel
-##XXXxxxxxxxx
 The 'seeds' dataset provided is a csv file that contains information on different wheat kernels and the type of wheat they came from. The three types were: Kama, Rosa and Canadian. The independent variables used were area, perimeter, compactness, length of kernel, width of kernel, asymmetry coefficient and length of kernel groove. The dataset came from: https://archive.ics.uci.edu/dataset/236/seeds.
 
 The aim of this project is to use three different machine learning methods; support vector machine, random forest and Knn to predict the wheat a kernel belongs to. The data will be prepared, preprocessed, trained and tested. Finally, a conclusion will be given.
@@ -39,6 +38,7 @@ plt.show()
 ```
 
 ![boxplot display of outliers](outliers_boxplot.png)
+
 ```
 df.loc[:,'area':'length of kernel groove'].hist(bins=10, figsize=(25, 20))
 plt.show()
@@ -263,3 +263,15 @@ plt.show()
 ```
 
 ![display of roc curve and auc values](results.roc.png)
+
+Conclusion
+
+As evidenced by the bar chart that compares performance metrics acorss the three models, SVM and random forest are the leading performers. They also have higher AUC scores than Knn. It is important to note that the conclusions drawn are for the sake of comparison, despite this, all models performed very well. AUC scores are the area under the ROC curve, which compares the true positive rate vs false positive rate for different prediction thresholds of the model used. Anything above 0.5 means the model is useful to some degree. The high scores demonstrate how useful these models are at predicting what wheat the kernels come from.
+
+
+
+
+
+
+
+
