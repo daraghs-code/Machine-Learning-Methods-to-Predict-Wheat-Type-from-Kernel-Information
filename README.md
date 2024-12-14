@@ -44,6 +44,10 @@ plt.show()
 ```
 ![histogram display of outliers](outliers_hist.png)
 
+Area, perimeter, length of kernel and length of kernel groove appear to be
+left skewed and could benefit from a log transform.
 
-
+The next step is to prepare the data for modelling, this will be done by
+converting the wheat to binary and splitting the data
+into two seperate components so it can be modelled. The binary split will be xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
