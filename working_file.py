@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Dec  8 22:18:01 2024
-
-@author: dobme
-"""
-
 '''
 importing all necessary packages
 '''
